@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jishu Backend Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #3461eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jishu Backend Test</h1>
+    <p>Use this page to test if your device can connect to the Jishu backend server.</p>
+    
+    <div>
+        <button onclick="testHealth()">Test Health Endpoint</button>
+        <button onclick="testOTP()">Test OTP Endpoint</button>
+    </div>
+    
+    <div class="result">
+        <h3>Result:</h3>
+        <pre id="result">Click a button to test the connection...</pre>
+    </div>
+    
+    <script>
+        const baseUrl = window.location.origin;
+        
+        async function testHealth() {
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = 'Testing health endpoint...';
+            
+            try {
+                const response = await fetch(`${baseUrl}/health`);
+                const data = await response.json();
+                
+                resultElement.textContent = `Success! Response: ${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultElement.textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        async function testOTP() {
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = 'Testing OTP endpoint...';
+            
+            try {
+                const response = await fetch(`${baseUrl}/auth/request-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mobile_number: '9876543212' })
+                });
+                
+                const data = await response.json();
+                resultElement.textContent = `Success! Response: ${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultElement.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
